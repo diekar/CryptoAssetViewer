@@ -1,4 +1,4 @@
-eur;"Beispieldatensatz aud dem Unterordner 'example'";"
+eur;"Beispieldatensatz aus dem Unterordner 'example'";"
 amount:
 name;place;count
 BTC;Kraken;1.00
