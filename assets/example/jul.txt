@@ -1,0 +1,26 @@
+usd;"7. Juli 2017";"
+amount:
+name;place;count
+BTC;coinmarketcap;0.10383569
+ETH;Bitfinex;12.1065
+XRP;Bitfinex;15290.51988
+LTC;Bitfinex;22.88329519
+XMR;Bitfinex;7.36377
+ETC;Bitfinex;68.96551724
+DASH;Bitfinex;8.880994671
+MAID;Bitfinex;1008.227133
+AUGUR;Bitfinex;26.385224
+STEEM;Bitfinex;587.4888377
+prices:
+name;eur;btc
+BTC;2425.92;
+ETH;270.49;
+XRP;0.253292;
+LTC;38.60;
+XMR;40.90;
+ETC;17.49;
+DASH;167.25;
+MAID;0.431162;
+AUGUR;24.37;
+STEEM;1.57;
+    

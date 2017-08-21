@@ -1,0 +1,26 @@
+usd;"5. Februar 2017";"
+amount:
+name;place;count
+BTC;coinmarketcap;0.10383569
+ETH;Bitfinex;12.1065
+XRP;Bitfinex;15290.51988
+LTC;Bitfinex;22.88329519
+XMR;Bitfinex;7.36377
+ETC;Bitfinex;68.96551724
+DASH;Bitfinex;8.880994671
+MAID;Bitfinex;1008.227133
+AUGUR;Bitfinex;26.385224
+STEEM;Bitfinex;587.4888377
+prices:
+name;eur;btc
+BTC;1040.84;
+ETH;11.40;
+XRP;0.006532;
+LTC;4.04;
+XMR;12.81;
+ETC;1.38;
+DASH;17.28;
+MAID;0.154601;
+AUGUR;4.25;
+STEEM;0.163057;
+    
