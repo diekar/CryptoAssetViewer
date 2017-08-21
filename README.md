@@ -6,6 +6,8 @@ A simple PHP + TXT-file tool to manage and view own crypto assets. A alternative
 ![Sample Cropicon images](screenshot2.jpg "Example Text-Base." )
 
 # .TXT file
+'''txt
+
 eur;"Beispieldatensatz aus dem Unterordner 'example'";"
 amount:
 name;place;count
@@ -18,6 +20,8 @@ BTC;3460.00;
 ETH;200.00;
 PAY;;0.000902
 LSK;;0.000716
+
+'''
 
 System requirements
 -----
