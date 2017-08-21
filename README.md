@@ -7,7 +7,19 @@ A simple PHP + TXT-file tool to manage and view own crypto assets. A alternative
 
 Use case
 -----
-xxx
+Excell sheets are useful to manage a own collection of crypto currencies. But sometimes you
+will destroy you trading/invenstment history by updating the fiat-prices of your crypto currencies
+like Bitoin, Ethereum or IOTA. Maybe you are using different exchanges, f.e. today (august 2017)
+you cannot trade IOTA on Kraken or Bittrex. Typically you have Bitcoins stored on many different
+exchanges, paper-wallets or hardware-wallets, but for you interest you only want to calculate with
+a single value, the accumulation of all BTC-positions.
+
+This project consist only of one single index.php and a subdirectory of your hard-asset investment.
+It should be also useful to use this tool to manage the value of gold- and silver coins like Krügerrand 
+or silvr Maple-Leaf :blush:.  
+
+
+
 
 Example .TXT file
 -----
