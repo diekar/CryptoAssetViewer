@@ -16,7 +16,7 @@ a single value, the accumulation of all BTC-positions.
 
 This project consist only of one single index.php and a subdirectory of your hard-asset investment.
 It should be also useful to use this tool to manage the value of gold- and silver coins like Krügerrand 
-or silvr Maple-Leaf :blush:.  
+or silver Maple-Leaf :blush:.  
 
 
 
