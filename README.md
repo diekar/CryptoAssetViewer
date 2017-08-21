@@ -1,6 +1,7 @@
 # CryptoAssetViewer
 A simple PHP + TXT-file tool to manage and view own crypto assets. A alternative to an Excel table.
 
+
 ![Sample Cropicon images](screenshot1.jpg "Example Screenshot in the browser window." )
 
 ![Sample Cropicon images](screenshot2.jpg "Example Text-Base." )
@@ -18,6 +19,10 @@ This project consist only of one single index.php and a subdirectory of your har
 It should be also useful to use this tool to manage the value of gold- and silver coins like Krügerrand 
 or silver Maple-Leaf :blush:.  
 
+In addition to the examples you may also to manage other projects like
+a different exchange or the crypto-fortfolio of other people. Easyly
+add other directories like "kraken", "paper wallets" or "high-risk-trading". This
+new directories will be visible in the bottom menu.
 
 
 
