@@ -5,7 +5,13 @@ A simple PHP + TXT-file tool to manage and view own crypto assets. A alternative
 
 ![Sample Cropicon images](screenshot2.jpg "Example Text-Base." )
 
-# .TXT file
+Use case
+-----
+xxx
+
+Example .TXT file
+-----
+
 ```ruby
 
 eur;"Beispieldatensatz aus dem Unterordner 'example'";"
@@ -22,6 +28,16 @@ PAY;;0.000902
 LSK;;0.000716
 
 ```
+
+First line: eur;[comment] -> Show &euro;(eur) or $(usd) - Currency Symbol
+[comment]: Here you can write some comments for this asset configuration.
+
+amount-area:
+-> Here you can list the amounts of your currencies.
+
+prices-area:
+-> Here you define the prices of each currency in fiat.
+-> If your cryptocurrency has no fiat-value you can define the Bitcoin (BTC)-price in the second row.
 
 System requirements
 -----
