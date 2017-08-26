@@ -4,6 +4,7 @@ assetviewer
 
 21.Aug.2017 - sven.pohl@zen-systems.de
 */
+define("VER", 1.1);
 ?>
 <html>
 <head>
@@ -39,7 +40,7 @@ if ( isset($_REQUEST['i']) )
       $filei = -1;
       }
    
-printf("<h3>Crypto Asset Viewer ($asset) </h3>");
+printf("<h3>Crypto Asset Viewer ".VER." ($asset) </h3>");
 
 $dateindex = 1;
 $index     = 0;
@@ -82,7 +83,7 @@ while ($SORT == 1)
       $SORT = 0;
       for ($i=0; $i<($size-1); $i++)
           {          
-          if ( $array_filetime[$i]['time'] > $array_filetime[$i+1]['time'] )
+          if ( $array_filetime[$i]['time'] < $array_filetime[$i+1]['time'] )
              {
              $swap = $array_filetime[$i];
              $array_filetime[$i] = $array_filetime[$i+1];
