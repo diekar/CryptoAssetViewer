@@ -1,6 +1,9 @@
 # CryptoAssetViewer
 A simple PHP + TXT-file tool to manage and view own crypto assets. A alternative to an Excel table.
 
+Update V 1.3 (27.Aug.2017) : Add online json-import prices from coinmarketcap.com.
+                             (https://api.coinmarketcap.com/v1/ticker/?convert=EUR&limit=300)
+
 
 ![Sample Cropicon images](screenshot1.jpg "Example Screenshot in the browser window." )
 
