@@ -3,8 +3,24 @@
 assetviewer 
 
 21.Aug.2017 - sven.pohl@zen-systems.de
+
+V 1.3 - 27.Aug.2017 - Add price-Import from coinmarketcap.
+
 */
-define("VER", 1.1);
+define("VER", 1.3);
+
+//
+// If this value is '1', the BTC/EUR-value is taken from coinmarketcap.com
+//
+$use_btc_eur_from_coinmarketcap = 1;
+
+//
+// Here the CoinMarketCap-Api-Link
+//
+$json_url = "https://api.coinmarketcap.com/v1/ticker/?convert=EUR&limit=300";
+
+
+
 ?>
 <html>
 <head>
@@ -39,6 +55,16 @@ if ( isset($_REQUEST['i']) )
       {
       $filei = -1;
       }
+
+if ( isset($_REQUEST['action']) )
+   {
+   $action = trim($_REQUEST['action']);
+   } 
+   else
+      {
+      $action = '';
+      }   
+
    
 printf("<h3>Crypto Asset Viewer ".VER." ($asset) </h3>");
 
@@ -160,6 +186,7 @@ foreach ($allfiles as $singlefile)
 
 
 printf("<hr>");
+
 //
 // Dates
 //
@@ -197,6 +224,12 @@ printf("<br>");
 //
 function show_file( $filename,  $comment )
 {
+global $asset;
+global $filei;
+global $action;
+global $use_btc_eur_from_coinmarketcap;
+global $json_url;
+
 $handle = fopen ($filename , "r");
 
 $PHASE = 0;
@@ -265,6 +298,7 @@ while (!feof($handle))
        $array_prices[$array_prices_i]['name']  = trim($buffer_array[0]);
        $array_prices[$array_prices_i]['eur']   = trim($buffer_array[1]);
        $array_prices[$array_prices_i]['btc']   = trim($buffer_array[2]);
+       $array_prices[$array_prices_i]['btc_cmc'] = 0;
        $array_prices_i++;
        }  //  if ( $PHASE == 1 ) 
     } // if ($buffer_array_count > 1)
@@ -276,13 +310,21 @@ while (!feof($handle))
 fclose ($handle);
 
 
-printf("<hr>");
-$total = 0;
-$size = count($array_prices);
+
+
+
+
+
+
+
 
 //
 // Get BTC price (EUR)
 //
+
+$total = 0;
+$size = count($array_prices);
+
 $btc_price_eur = 0;
 for ($i=0; $i<$size; $i++)
     {
@@ -292,21 +334,123 @@ for ($i=0; $i<$size; $i++)
        break;
        }
     }
+
+
+// ------------------
+// Menu
+//
+printf("<hr>");
+
+printf("<a href='index.php?asset=".$asset."&i=".$filei."&action=importcmc'>CoinMarketCap Preise</a>");
+printf("<br>");
+
+
+//
+// Use prices from coinmarketcap.com
+//
+if ($action == 'importcmc')
+   {   
+   printf("<small>URL: [".$json_url."] </small><br>");
+   
+   $string = file_get_contents( $json_url);
+   $json_a = json_decode($string, true);
+
+
+   
+   
+   //
+   // Update Prices
+   //
+   $size = count($array_prices);
+
+   for ($i=0; $i<$size; $i++)
+       {    
+       $name = $array_prices[$i]['name'];
+       
+       //
+       // Search in json
+       //
+       $btc_price_cmc = 0.2;       
+       $size2 = count($json_a);       
+       $FOUND = 0;
+
+       for ($i2=0; $i2<$size2; $i2++)
+           {
+           
+           if (
+              $use_btc_eur_from_coinmarketcap == 1 &&
+              $json_a[$i2]['symbol'] == "BTC"
+              )
+              {
+              $btc_price_eur = $json_a[$i2]['price_eur']; 
+              }
+           
+           if ( $json_a[$i2]['symbol'] == $name && $name != "BTC")
+              {
+              $btc_price_cmc = $json_a[$i2]['price_btc'];
+              $FOUND = 1;
+              break;
+              } // if
+           } // i2...
+
+ 
+       if ( $FOUND )
+          {
+          $price = $btc_price_cmc ;
+          $array_prices[$i]['btc_cmc'] = $price  ; 
+          }
+          else
+             {
+             }
+       //
+       // END - Search in json
+       //
+
+       
     
+       } // for ...
+
+   //
+   // END - Update Preise
+   //
+
+
+
+   } // if ($action == 'importcmc')
+
+
+printf("<hr>");
+
+
+
+$btc_price_eur = number_format($btc_price_eur,2,'.','')."";    
 printf("Basispreis Bitcoin: " . $btc_price_eur . " $currency<br>");
+printf("<br>");
+
+//
+// END - Menu
+// ------------------
+
 printf("<br>");
 
 for ($i=0; $i<$size; $i++)
     {
-    $name = trim($array_prices[$i]['name']);
-    $eur  = trim($array_prices[$i]['eur']);
-    $btc  = trim($array_prices[$i]['btc']);
+    $name    = trim($array_prices[$i]['name']);
+    $eur     = trim($array_prices[$i]['eur']);
+    $btc     = trim($array_prices[$i]['btc']);
+    $btc_cmc = trim($array_prices[$i]['btc_cmc']);
     
     $base_price = $eur;
     if ($btc > 0)
        {
        $base_price = $btc_price_eur * $btc;       
        }
+
+    if ($btc_cmc > 0)
+       {
+       $base_price = $btc_price_eur * $btc_cmc;       
+       }
+
     
     $sum = 0;
     
@@ -325,18 +469,29 @@ for ($i=0; $i<$size; $i++)
            } // if name
         } // for i2...
     
-    $raw1_width = 200;
-    $raw2_width = 160;
-    $raw3_width = 190;
-    $raw4_width = 190;
+    $raw1_width  = 200;
+    $raw2_width  = 160;
+    $raw3_width  = 190;
+    $raw3b_width = 190;
+    $raw4_width  = 190;
 
 
     $sum2 = number_format($sum,2,'.','')."";
     
     if ($i == 0)
        {
-       $col = "#444444";
+       $col  = "#444444";
        $col2 = "#ffffff";
+       
+       //
+       // If coinmarketcap, use green colors.
+       //
+       if ($action == 'importcmc')
+          {
+          $col  = "#449944";
+          $col2 = "#ddffdd";
+          }
+       
        printf("<div class='divcell' style='width:".$raw1_width."px;background:$col;color:$col2;'>");
        printf("<strong>Asset</strong>");
        printf("</div>"); 
@@ -359,23 +514,35 @@ for ($i=0; $i<$size; $i++)
        printf("<div style='clear:both;'></div>");
        } // if i == 0
     
-    $col = "#eeeeee";
-    if ( $i % 2 == 0 ) $col = "#cccccc";
+      
+      //
+      // If Coinmarketcap, use green colors
+      // 
+      if ($action == 'importcmc')
+          {
+          $col = "#eeffee";
+          if ( $i % 2 == 0 ) $col = "#ccddcc";
+          }
+          else
+              {
+              $col = "#eeeeee";
+              if ( $i % 2 == 0 ) $col = "#cccccc";
+              }
     
-    printf("<div class='divcell' style='width:".$raw1_width."px;background:$col;'>");
-    printf("<strong>".$name ."</strong>");
-    printf("</div>"); 
+      printf("<div class='divcell' style='width:".$raw1_width."px;background:$col;'>");
+      printf("<strong>".$name ."</strong>");
+      printf("</div>"); 
     
 
-    printf("<div class='divcell' style='width:".$raw2_width."px;background:$col;'>");
-    printf("&nbsp;"." ".$the_count_sum);
-    printf("</div>"); 
+      printf("<div class='divcell' style='width:".$raw2_width."px;background:$col;'>");
+      printf("&nbsp;"." ".$the_count_sum);
+      printf("</div>"); 
 
-    printf("<div class='divcell' style='width:".$raw3_width."px;background:$col;'>");
-    printf("&nbsp;"." $base_price $currency");
-    printf("</div>"); 
+      printf("<div class='divcell' style='width:".$raw3_width."px;background:$col;'>");
+      printf("&nbsp;"." $base_price $currency");
+      printf("</div>"); 
 
-
+ 
     printf("<div class='divcell' style='width:".$raw4_width."px;background:$col;'>");
 
     $sum = number_format($sum,2,'.','')."";
@@ -389,6 +556,8 @@ for ($i=0; $i<$size; $i++)
     } // for i..
 
 
+printf("<br>");
+printf("Anzahl W&auml;hrungen: $size<br>");
 printf("<br>");
 
 $total = number_format($total,2,'.','')."";
