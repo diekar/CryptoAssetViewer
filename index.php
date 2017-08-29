@@ -5,9 +5,9 @@ assetviewer
 21.Aug.2017 - sven.pohl@zen-systems.de
 
 V 1.3 - 27.Aug.2017 - Add price-Import from coinmarketcap.
-
+V 1.4 - 28.Aug.2017 - Saving coinmarketcap-prices in separate file.
 */
-define("VER", 1.3);
+define("VER", 1.4);
 
 //
 // If this value is '1', the BTC/EUR-value is taken from coinmarketcap.com
@@ -39,31 +39,16 @@ $json_url = "https://api.coinmarketcap.com/v1/ticker/?convert=EUR&limit=300";
 
 
 if ( isset($_REQUEST['asset']) )
-   {
-   $asset = trim($_REQUEST['asset']);
-   } 
-   else
-      {
-      $asset = 'example';
-      }   
+   { $asset = trim($_REQUEST['asset']); } else { $asset = 'example'; }   
 
 if ( isset($_REQUEST['i']) )
-   {
-   $filei = $_REQUEST['i']; 
-   }
-   else
-      {
-      $filei = -1;
-      }
+   { $filei = $_REQUEST['i']; } else { $filei = -1; }
 
 if ( isset($_REQUEST['action']) )
-   {
-   $action = trim($_REQUEST['action']);
-   } 
-   else
-      {
-      $action = '';
-      }   
+   { $action = trim($_REQUEST['action']); } else { $action = ''; }   
+
+if ( isset($_REQUEST['subaction']) )
+   { $subaction = trim($_REQUEST['subaction']); } else { $subaction = ''; }   
 
    
 printf("<h3>Crypto Asset Viewer ".VER." ($asset) </h3>");
@@ -227,6 +212,7 @@ function show_file( $filename,  $comment )
 global $asset;
 global $filei;
 global $action;
+global $subaction;
 global $use_btc_eur_from_coinmarketcap;
 global $json_url;
 
@@ -297,7 +283,8 @@ while (!feof($handle))
        {
        $array_prices[$array_prices_i]['name']  = trim($buffer_array[0]);
        $array_prices[$array_prices_i]['eur']   = trim($buffer_array[1]);
-       $array_prices[$array_prices_i]['btc']   = trim($buffer_array[2]);
+       $array_prices[$array_prices_i]['btc']   = trim($buffer_array[2]); 
+         
        $array_prices[$array_prices_i]['btc_cmc'] = 0;
        $array_prices_i++;
        }  //  if ( $PHASE == 1 ) 
@@ -342,8 +329,22 @@ for ($i=0; $i<$size; $i++)
 printf("<hr>");
 
 printf("<a href='index.php?asset=".$asset."&i=".$filei."&action=importcmc'>CoinMarketCap Preise</a>");
+
+if ($action == 'importcmc')
+   {  
+   printf(" | <a href='index.php?asset=".$asset."&i=".$filei."&action=importcmc&subaction=savecmcprices'>Speichere CMC Preise</a>");
+   printf("<br>");
+   }
 printf("<br>");
 
+
+//
+// Safe File with new CMC-Prices
+//
+if ($action == 'savecmcprices')
+   {   
+   printf("savecmcprices...<br>");
+   } // if ($action == 'savecmcprices')
 
 //
 // Use prices from coinmarketcap.com
@@ -415,8 +416,11 @@ if ($action == 'importcmc')
    //
 
 
+   
 
    } // if ($action == 'importcmc')
+
+
 
 
 printf("<hr>");
@@ -468,6 +472,12 @@ for ($i=0; $i<$size; $i++)
            $the_count_sum =     $the_count_sum + $the_count;          
            } // if name
         } // for i2...
+    
+    //
+    // Remember for file-save
+    //
+    $array_prices[$i]['count'] = $the_count_sum;
+    $array_prices[$i]['base_price'] = $base_price;
     
     $raw1_width  = 200;
     $raw2_width  = 160;
@@ -556,8 +566,60 @@ for ($i=0; $i<$size; $i++)
     } // for i..
 
 
+   //
+   // Save with CoinMarketCap prices. New filename: datei.txt => datei_cmc.txt
+   //
+   if ($action == 'importcmc')  
+      {
+      if ($subaction == 'savecmcprices')
+         {
+         $file = "";
+         printf("<strong>Speichere $filename </strong><br>"); 
+
+         $filename = str_replace(".txt","_cmc.txt",$filename);
+         
+         $handle2 = fOpen($filename , "wb");
+                 
+         if ($currency == "&euro;") $buffer2 = "eur;".$comment." - CMC saved\n";
+         if ($currency == "$")      $buffer2 = "usd;".$comment." - CMC saved\n";
+         fWrite($handle2, $buffer2);
+         
+         $buffer2 = "amount:\n";
+         fWrite($handle2, $buffer2);
+         
+         $size = count($array_prices);
+         printf("size: $size <br>");
+         
+         for ($i=0; $i<$size; $i++)
+             {
+             $buffer2 = "".$array_prices[$i]['name'].";NON;".$array_prices[$i]['count']."\n";
+             printf("" . $buffer2 ."<br>");
+             
+             fWrite($handle2, $buffer2);         
+             } // for ...
+ 
+         $buffer2 = "prices:\n";
+         fWrite($handle2, $buffer2);
+
+         $buffer2 = "name;eur;btc\n";
+         fWrite($handle2, $buffer2);
+         
+         for ($i=0; $i<$size; $i++)
+             {
+             $buffer2 = "".$array_prices[$i]['name'].";".$array_prices[$i]['base_price'].";\n";
+             printf("" . $buffer2 ."<br>");
+             
+             fWrite($handle2, $buffer2);         
+             } // i..         
+         
+         fClose($handle2);	
+         } // if...
+
+      } // if ($action == 'importcmc')
+
+
 printf("<br>");
-printf("Anzahl W&auml;hrungen: $size<br>");
+printf("Anzahl W&auml;hrungen: $size <br>");
 printf("<br>");
 
 $total = number_format($total,2,'.','')."";
