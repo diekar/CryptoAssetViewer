@@ -2,12 +2,13 @@
 /*
 assetviewer 
 
-21.Aug.2017 - sven.pohl@zen-systems.de
+First release: 21.Aug.2017 - sven.pohl@zen-systems.de
 
 V 1.3 - 27.Aug.2017 - Add price-Import from coinmarketcap.
 V 1.4 - 28.Aug.2017 - Saving coinmarketcap-prices in separate file.
+V 1.5 - 07.Sep.2017 - Replace get_file_contents with curl.
 */
-define("VER", 1.4);
+define("VER", 1.5);
 
 //
 // If this value is '1', the BTC/EUR-value is taken from coinmarketcap.com
@@ -352,8 +353,15 @@ if ($action == 'savecmcprices')
 if ($action == 'importcmc')
    {   
    printf("<small>URL: [".$json_url."] </small><br>");
-   
-   $string = file_get_contents( $json_url);
+      
+   $ch = curl_init();        
+   curl_setopt ($ch, CURLOPT_URL, $json_url);
+   curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+   $timeout = 5;
+   curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+   $string = curl_exec($ch);       
+   curl_close($ch);
+      
    $json_a = json_decode($string, true);
 
 
